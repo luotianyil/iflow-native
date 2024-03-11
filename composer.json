@@ -1,0 +1,50 @@
+{
+    "name": "iflow/native",
+    "description": "php for window",
+    "authors": [
+        {
+            "name": "洛水天依",
+            "email": "luotianyiovo@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1.0",
+        "psr/log": "~1.0",
+        "psr/container": "~1.0",
+        "psr/simple-cache": "^1.0",
+        "league/flysystem": "2.x",
+        "nikic/php-parser": "^4.10",
+        "phpunit/phpunit": "^9.5",
+        "workerman/workerman": "v5.0.0-beta.7",
+        "iflow/template": "^0.0.1",
+        "iflow/helper": "^0.0.1",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-bcmath": "*",
+        "ext-zlib": "*",
+        "ext-fileinfo": "*",
+        "ext-curl": "*",
+        "ext-ctype": "*",
+        "ext-sockets": "*",
+        "ext-gd": "*",
+        "ext-openssl": "*",
+        "symfony/console": "^6.3",
+        "symfony/process": "^6.3"
+    },
+    "license": "MulanPSL-2.0",
+    "autoload": {
+        "psr-4": {
+            "iflow\\native\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "iflowTest\\": "tests"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true
+        }
+    }
+}

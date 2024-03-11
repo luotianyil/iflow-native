@@ -1,0 +1,17 @@
+/.idea
+/.vscode
+/.git
+/vendor
+/ffi
+/view
+/template
+/build
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+.tongyiignore
+.env
+.env.test
+###< micro ###
+micro.sfx

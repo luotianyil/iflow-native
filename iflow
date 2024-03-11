@@ -1,0 +1,160 @@
+#!/usr/bin/env php
+<?php
+namespace iflow\native;
+
+
+use iflow\native\Window\Electron\Layout\Menu\Menu;
+use iflow\native\Window\Electron\Layout\Menu\Options\MenuItemOptions;
+use iflow\native\Window\Electron\Layout\Menu\Options\MenuOptions;
+use iflow\native\Window\Electron\Layout\Menu\Options\TrayOptions;
+use iflow\native\Window\Electron\Layout\Menu\Tray;
+use iflow\native\Window\NetChannel\WebSocket\Formatter\PackageFormatter;
+use iflow\native\Window\NetChannel\WebSocket\Websocket;
+use iflow\native\Window\Service\Dialog;
+use iflow\native\Window\Service\Notification;
+use iflow\native\Window\Service\Options\DialogOptions;
+use Workerman\Connection\TcpConnection;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$menu = new MenuOptions();
+$tray = new TrayOptions();
+
+//    'url' => 'http://localhost/phpinfo.php',
+//    'url' => 'http://192.168.2.198:8000',
+
+const icon = 'C:\WorkSpacesFolder\live_project\iflow_application\public\favicon.ico';
+const url = 'C:\WorkSpacesFolder\live_project\framework_project\iflow_native\template\template_6a992d5529f459a44fee58c733255e86.html';
+
+const resource = 'C:\WorkSpacesFolder\live_project\framework_project\iflow_native_electron';
+
+// 启动窗口程序
+$native = (new Native([
+    'resource' => resource,
+    'websocket' => [
+        'messageEnum' => [
+            'notification' => function (Websocket $websocket, TcpConnection $connection, PackageFormatter $data) {
+                $websocket -> getNative() -> getService(
+                    Notification::class
+                ) -> notification(
+                    $data -> data[1]['title'] ?? '消息提示',
+                    $data -> data[1]['subtitle'] ?? '应用启动成功',
+                    $data -> data[1]['body'] ?? '应用启动成功',
+                    [
+                        'actions' => [
+                            [
+                                'type' => 'button',
+                                'text' => '测试按钮'
+                            ]
+                        ],
+                        'events' => [ 'click' => 'test_submenu_event', 'show' => 'notification_show_event' ],
+                        'options' => $data -> data[1],
+                        'windowId' => $data -> data[1]['windowId'] ?? 0
+                    ]
+                );
+            },
+            'dialog' => function (Websocket $websocket, TcpConnection $connection, PackageFormatter $data) {
+                $options = $data -> data[1];
+                $options['options']['icon'] = icon;
+                $websocket -> getNative() -> getService(Dialog::class) -> dialog(
+                    new DialogOptions($options['options']), $options
+                );
+            },
+            'test_submenu_event' => function (Websocket $websocket, TcpConnection $connection, PackageFormatter $data) {
+                $websocket -> getNative() -> getService(Menu::class) -> menu(
+                    (new MenuOptions()) -> setMenuItem('_submenu', new MenuItemOptions([
+                        'label' => '测试菜单',
+                        'event' => 'test_submenu_event'
+                    ])),
+                    $data -> data[1]
+                );
+            },
+            'test_tray_event' => function (Websocket $websocket, TcpConnection $connection, PackageFormatter $data) {
+                $websocket -> getNative() -> getService(Tray::class) -> tray(
+                    (new TrayOptions()) -> setOption('icon', 'C:\WorkSpacesFolder\live_project\iflow_application\public\favicon.ico')
+                        -> setOption('title', '2333')
+                        -> setOption('tipTitle', '2333')
+                        -> setMenuItem('_menu', new MenuItemOptions([
+                            'label' => '测试菜单',
+                            'event' => 'test_tray_event'
+                        ]))
+                        -> setMenuItem('_menu_1', new MenuItemOptions([
+                            'label' => '测试菜单_1',
+                            'event' => 'test_tray_event'
+                        ])),
+                    $data -> data[1]
+                );
+            },
+            'test_response_event' => function (Websocket $websocket, TcpConnection $connection, PackageFormatter $data) {
+                $websocket -> emitResponse($websocket -> getSid(), $data -> data[1]['requestHasUuid'], $data -> data);
+            },
+            'shortcut-quit' => function (Websocket $websocket, TcpConnection $connection, PackageFormatter $data) {
+//                $websocket -> emitWindowMessageChannel($websocket -> getSid(), [
+//                    'event' => 'window',
+//                    'options' => [
+//                        'event' => 'close'
+//                    ],
+//                    'windowId' => $data -> data[1]['windowId'] ?? 0
+//                ]);
+                $websocket -> emitResponse($websocket -> getSid(), $data -> data[1]['requestHasUuid'], $data -> data);
+            }
+        ]
+    ],
+    'builder' => [
+        'phar' => [
+            'phar-path' => __DIR__ . '/native.phar',
+            'root' => __DIR__,
+            'entry' => 'iflow',
+            'web-entry' => 'iflow',
+            'micro-path' => __DIR__ . '/micro.sfx'
+        ]
+    ]
+]));
+
+$type = $_SERVER['argv'][1] ?? 'start';
+
+// 是否为打包 构建程序
+if ($type === 'build') {
+    return $native -> builder();
+}
+
+// 是否运行程序
+if ($type === 'start') {
+    $native -> start([
+        'width' => 1020,
+        'height' => 600,
+        'hidden' => false,
+        'frame' => false,
+        'menuBarVisible' => true,
+        'openDevTools' => false,
+        'url' => url,
+        'icon' => icon,
+        'menu' => $menu -> setMenuItem('_menu', new MenuItemOptions([
+            'label' => '测试菜单',
+            'event' => 'test_menu_event',
+            'submenu' => (new MenuOptions()) -> setMenuItem('_submenu', new MenuItemOptions([
+                'label' => '测试子菜单',
+                'event' => 'test_submenu_event'
+            ])) -> setMenuItem('__submenu', new MenuItemOptions([
+                'label' => '测试通知',
+                'event' => 'notification'
+            ]))
+        ])) -> getMenuItemsToArray(),
+        'tray' => $tray -> setOption('icon', 'C:\WorkSpacesFolder\live_project\iflow_application\public\favicon.ico')
+            -> setOption('title', '2333')
+            -> setOption('tipTitle', '2333')
+            -> setMenuItem('_menu', new MenuItemOptions([
+                'label' => '测试菜单',
+                'event' => 'test_tray_event'
+            ]))
+            -> setMenuItem('_menu_1', new MenuItemOptions([
+                'label' => '响应请求',
+                'event' => 'test_response_event',
+                'awaitResponse' => true
+            ]))
+            -> toArray(),
+        'shortcut' => [
+            [ 'shortcut' => 'Ctrl+Q', 'event' => 'shortcut-quit' ]
+        ]
+    ]);
+}
