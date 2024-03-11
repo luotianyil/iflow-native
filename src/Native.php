@@ -7,15 +7,13 @@ use iflow\native\Console\Console;
 use iflow\native\Window\NetChannel\WebSocket\Websocket;
 use iflow\native\Window\Window;
 use iflow\native\Window\WindowConfig;
-use Symfony\Component\Process\InputStream;
-use Symfony\Component\Process\Process;
 
 class Native extends Window {
 
     /**
      * @description  工作环境 development | production
      */
-    protected string $RUN_ING_TYPE = 'production';
+    protected string $RUN_ING_TYPE = 'development';
 
     // 主窗口配置
     protected array $mainWindow = [

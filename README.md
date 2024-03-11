@@ -7,7 +7,7 @@
 ## 快速开始
 
 ```bash
-composer require iflow/iflow-native
+composer require iflow/native
 ```
 
 ## 依赖项目
