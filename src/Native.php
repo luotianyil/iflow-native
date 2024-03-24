@@ -55,8 +55,8 @@ class Native extends Window {
         if ($this -> RUN_ING_TYPE === 'development') {
             if (!file_exists($this->config -> getElectronPath() . DIRECTORY_SEPARATOR . 'install.lock')) {
                 $command[] = [
-                    $this->config->getElectron()['package_tool'],
-                    'install', '--registry', $this->config -> getElectron()['registry'],
+                    $this->config->getElectron('package_tool'),
+                    'install', '--registry', $this->config -> getElectron('registry'),
                     'callback' => fn () => file_put_contents(
                         $this->config -> getElectronPath() . DIRECTORY_SEPARATOR . 'install.lock',
                         'installed'
@@ -65,10 +65,11 @@ class Native extends Window {
             }
 
             $command[] = [
-                $this->config -> getElectron()['package_tool'],
+                $this->config -> getElectron('package_tool'),
                 'electron',
                 "net-url=$netUrl"
             ];
+
         } else {
             $command[] = [
                 '.'.DIRECTORY_SEPARATOR.$this -> config -> getElectronRunEntry(),

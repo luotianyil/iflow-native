@@ -107,6 +107,12 @@ class WindowConfig {
     protected bool $openDevTools;
 
     /**
+     * 预加载js
+     * @var string
+     */
+    protected string $preload;
+
+    /**
      * 是否可关闭
      * @var bool
      */

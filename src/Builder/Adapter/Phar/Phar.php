@@ -23,7 +23,7 @@ class Phar {
             $this->phar -> compressFiles(_Phar::GZ);
 
             if ($this->pharBuilderConfig['privatekey'] && file_exists($this->pharBuilderConfig['privatekey'])) {
-                $private = openssl_get_privatekey(file_get_contents('private.pem'));
+                $private = openssl_get_privatekey(file_get_contents($this->pharBuilderConfig['privatekey']));
                 $pkey = '';
                 openssl_pkey_export($private, $pkey);
                 $this->phar -> setSignatureAlgorithm(_Phar::OPENSSL, $pkey);

@@ -12,7 +12,7 @@ class Options {
 
     public string $tipTitle = '';
 
-    public bool $awaitResponse;
+    public bool $emitAsync;
 
     public array $options = [];
 

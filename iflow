@@ -124,7 +124,7 @@ if ($type === 'start') {
         'width' => 1020,
         'height' => 600,
         'hidden' => false,
-        'frame' => false,
+//        'frame' => false,
         'menuBarVisible' => true,
         'openDevTools' => false,
         'url' => url,
@@ -150,7 +150,7 @@ if ($type === 'start') {
             -> setMenuItem('_menu_1', new MenuItemOptions([
                 'label' => '响应请求',
                 'event' => 'test_response_event',
-                'awaitResponse' => true
+                'emitAsync' => true
             ]))
             -> toArray(),
         'shortcut' => [

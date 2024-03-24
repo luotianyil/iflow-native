@@ -45,6 +45,7 @@ trait StartTrait {
      * @throws \Throwable
      */
     public function onWebSocketConnect(TcpConnection $connection, Request $request): void {
+
         $this->sid = base64_encode(uniqid());
 
         $this->EIO = $request -> get('EIO', '');

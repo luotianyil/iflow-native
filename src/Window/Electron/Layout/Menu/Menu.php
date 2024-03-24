@@ -23,6 +23,7 @@ class Menu implements RegisterServiceInterface {
             $this->native -> getWebsocket() -> getSid(),
             [
                 'event' => 'menu',
+                'windowId' => $data['windowId'] ?? 0,
                 'options' => [
                     'menu' => $menu -> getMenuItemsToArray(),
                     'menuBarVisible' => $menuBarVisible,

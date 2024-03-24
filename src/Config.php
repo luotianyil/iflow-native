@@ -127,9 +127,11 @@ class Config {
     }
 
     /**
-     * @return array
+     * @param string $key
+     * @return array|string
      */
-    public function getElectron(): array {
+    public function getElectron(string $key = ''): array|string {
+        if ($key) return $this->config['electron'][$key] ?? '';
         return $this->config['electron'];
     }
 
@@ -146,7 +148,7 @@ class Config {
      */
     public function getElectronPath(): string {
 
-        if ($this->getResource()) return $this->getResource();
+        if ($this->getResource()) return str_replace('\\', '/', $this->getResource());
 
         $path = str_replace('\\', '/', "{$this -> getBasePath()}/Electron");
 
